@@ -29,7 +29,7 @@ class Connection {
 		}
 	}
 
-	public static function generateInsertQuery($table, $array) {
+	public static function getInsertQuery($table, $array) {
 		$query = "INSERT INTO " . $table;
 		$fields = "";
 		$values = "";
@@ -46,5 +46,24 @@ class Connection {
 		$query .= " VALUES (" . $values . ")";
 
 		return $query;
+	}
+
+	public static function update($table, $array, $id) {
+		$query = "UPDATE " . $table;
+		$values = "";
+
+		foreach ($array as $key => $value) {
+			$values .= $key . " = '" . $value . "', ";
+		}
+
+		$values = substr($values, 0, -2);
+
+		$query .= " SET " . $values . " WHERE id = '" . $id . "'";
+
+		return mysql_query($query);
+	}
+
+	public static function delete($table, $id) {
+		return Connection::query("DELETE FROM " . $table . " WHERE id = " . $id);
 	}
 }
