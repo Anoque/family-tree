@@ -2,6 +2,8 @@
 
 Simple family tree. 
 
+### To run the project you need:
+
 > Import db/family_tree.sql to database
 
 > Create a host and load files
