@@ -35,8 +35,6 @@ class tree_controller extends controller {
 			$data['id'] = 0;
 		}
 
-		echo $id;
-
 		if (isset($_POST['id'])) {
 			$values = array();
 			$values['name'] = $_POST['name'];
