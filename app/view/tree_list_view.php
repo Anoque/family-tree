@@ -1,27 +1,21 @@
-<style>
-	.demo-card-square.mdl-card {
-	  width: 320px;
-	  height: 320px;
-	}
-	.demo-card-square > .mdl-card__title {
-	  color: #fff;
-	  background:
-	    url('../css/transparent.jpg') bottom right 15% no-repeat #46B6AC;
-	}
+<style type="text/css">
+    a.secondary-content {
+        margin-right: 20px;
+    }
 </style>
-
-
-<div class="demo-card-square mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title mdl-card--expand">
-    <h2 class="mdl-card__title-text">Update</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Aenan convallis.
-  </div>
-  <div class="mdl-card__actions mdl-card--border">
-    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-      View Updates
-    </a>
-  </div>
-</div>
+<? if (isset($data['delete'])): ?>
+    <h3><?= ($data['delete']) ? "Deleted" : "Error" ?></h3>
+<? else: ?>
+    <ul class="collection with-header">
+        <li class="collection-header"><h4>Names</h4></li>
+        <? foreach($data['members'] as $item): ?>
+            <li class="collection-item">
+                <div>
+                    <?= $item['name'] ?>
+                    <a href="/tree/delete/<?= $item['id'] ?>" class="secondary-content"><i class="material-icons" title="Delete">delete</i></a>
+                    <a href="/tree/add/<?= $item['id'] ?>" class="secondary-content"><i class="material-icons" title="Edit">account_box</i></a>
+                </div>
+            </li>
+        <? endforeach; ?>
+    </ul>
+<? endif; ?>
