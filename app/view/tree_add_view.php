@@ -17,6 +17,25 @@
 			</select>
 		</div>
 		<? endif; ?>
+		<div class="input-field col s6">
+			<label for="partner">Partner</label>
+			<input id="partner" name="partner" type="text" value="<?=$data['partner']?>">
+			<span class="helper-text" data-error="wrong" data-success="right">Optional</span>
+		</div>
+		<div class="input-field col s12">
+			<label for="description">Description</label>
+			<textarea id="description" name="description" class="materialize-textarea"><?= $data['description'] ?></textarea>
+			<span class="helper-text" data-error="wrong" data-success="right">Optional</span>
+		</div>
+		<div class="switch">
+			<br>
+			<label for="sex">
+				Male
+				<input type="checkbox" name="sex" id="sex" <?=($data['sex'] == 1) ? "checked" : ""?>>
+				<span class="lever"></span>
+				Female
+			</label>
+		</div>
 		<br>
 		<button class="waves-effect waves-light btn" type="submit"><?= ($data['id'] == 0) ? "Add" : "Edit" ?></button>
 	</form>
