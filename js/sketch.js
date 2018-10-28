@@ -1,20 +1,27 @@
 var	array = [],
 	members,
 	sizeBlockX = 200;
-	sizeBlockY = 50;
+	sizeBlockY = 40;
 	tree = [],
-	fontSize = 16,
-	getMembersUrl = "http://localhost/tree/get";
+	margin = 10,
+	fontSize = 14,
+	biasX = 0,
+	biasY = 0,
+	getMembersUrl = "http://localhost/tree/get",
+	colorBox = [
+		[65, 105, 225],
+		[240, 128, 128]
+	];
 
 function setup() {
 	createCanvas(document.body.clientWidth, document.body.clientHeight);
-	frameRate(10);
+	frameRate(100);
 
 	$.ajax({
 		url: getMembersUrl,
 		success: function(value) {
 			members = JSON.parse(value);
-			noLoop();
+			// noLoop();
 			textSize(fontSize);
 			var deleted = 0;
 			
@@ -42,30 +49,47 @@ function setup() {
 
 function draw() {
 	textAlign(CENTER);
+	stroke(255);
+
+	if (mouseIsPressed) {
+		if (lastCoordX != mouseX || lastCoordY != mouseY) {
+			biasX += mouseX - lastCoordX;
+			biasY += mouseY - lastCoordY;
+			clear();
+		}
+	}
+
+	lastCoordX = mouseX;
+	lastCoordY = mouseY;
 
 	for (var i = 0; i < tree.length; i++) {
 		for (var j = 0; j < tree[i].length; j++) {
+			fill(colorBox[+tree[i][j].sex][0], colorBox[+tree[i][j].sex][1], colorBox[+tree[i][j].sex][2]);
+
+			rect(tree[i][j].x + biasX, tree[i][j].y + biasY, sizeBlockX, sizeBlockY, 10);
 			fill(255);
-			rect(tree[i][j].x, tree[i][j].y, sizeBlockX, sizeBlockY);
-			fill(0);
-			text(tree[i][j].name, tree[i][j].x + sizeBlockX / 2, tree[i][j].y + sizeBlockY / 2 + fontSize / 2);
+			text(tree[i][j].name, tree[i][j].x + sizeBlockX / 2 + biasX, tree[i][j].y + sizeBlockY / 2 + fontSize / 2 + biasY);
+			
+			if (tree[i][j].partner != null && tree[i][j].partner.length > 0) {
+				stroke(255, 0, 0);
+				fill(255);
+				rect(tree[i][j].x + sizeBlockX - 5 + biasX, tree[i][j].y + biasY, sizeBlockX, sizeBlockY, 10);
+				fill(0);
+				noStroke();
+				text(tree[i][j].partner, tree[i][j].x + sizeBlockX * 1.5 + biasX, tree[i][j].y + sizeBlockY / 2 + fontSize / 2 + biasY);
+				stroke(255);
+				line(tree[i][j].x + sizeBlockX + biasX, tree[i][j].y + sizeBlockY / 2 + biasY, tree[i][j].x + sizeBlockX - 5 + biasX, tree[i][j].y + sizeBlockY / 2 + biasY);
+			}
 
 			if (tree[i][j].hasChild) {
-				stroke(255);
-				var childs = tree[i + 1].filter(function(value) {
-					return value.parent_id == tree[i][j].id;
-				});
+				var childs = getChilds(tree[i][j].id, i + 1, true);
 
 				for (var k = 0; k < childs.length; k++) {
-					line(tree[i][j].x + (sizeBlockX / 2), tree[i][j].y + sizeBlockY, childs[k].x + (sizeBlockX / 2), childs[k].y);
+					line(tree[i][j].x + (sizeBlockX / 2) + biasX, tree[i][j].y + sizeBlockY + biasY, childs[k].x + (sizeBlockX / 2) + biasX, childs[k].y + biasY);
 				}
 			}
 		}
 	}
-}
-
-function drawMemberBlock(member, x, y) {
-	text();
 }
 
 function setNewLevel(level, member) {
@@ -75,9 +99,7 @@ function setNewLevel(level, member) {
 
 	tree[level - 1].push(member);
 
-	var childs = members.filter(function(value) {
-		return value.parent_id == member.id;
-	});
+	var childs = getChilds(member.id, 0, false);
 
 	tree[level - 1][tree[level - 1].length - 1].hasChild = (childs.length > 0);
 
@@ -87,18 +109,32 @@ function setNewLevel(level, member) {
 }
 
 function getCoords(elements_count, level) {
-	var step = width / elements_count;
-	console.log(elements_count);
+	var step = sizeBlockX + 10;
 	var result = [];
-	var bias =  step / (elements_count * 2);
-
-	if (elements_count == 1) {
-		bias -= sizeBlockX / 2;
-	}
 
 	for (var i = 0; i < elements_count; i++) {
-		result.push([i * step + bias, level * sizeBlockY + (level * sizeBlockY)]);
+		result.push([i * step + margin, level * sizeBlockY + (level * sizeBlockY)]);
 	}
 
 	return result;
+}
+
+function getChilds(id, index, isTree) {
+	var items = (isTree) ? tree[+index] : members;
+
+	return items.filter(function(value) {
+		return value.parent_id == id;
+	});
+}
+
+function biasParents(level, parent_id, childs_count) {
+	for (var i = 0; i < tree[level - 1].length; i++) {
+		if (tree[level - 1][i] == parent_id) {
+			if (i > 0) {
+				// 
+			} else {
+				// 
+			}
+		}
+	}
 }
