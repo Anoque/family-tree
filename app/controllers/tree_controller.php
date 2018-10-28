@@ -30,6 +30,9 @@ class tree_controller extends controller {
 			$data['id'] = $member['id'];
 			$data['name'] = $member['name'];
 			$data['parent_id'] = $member['parent_id'];
+			$data['partner'] = $member['partner'];
+			$data['description'] = $member['description'];
+			$data['sex'] = $member['sex'];
 		} else {
 			$data['title'] = "Add member";
 			$data['id'] = 0;
@@ -39,6 +42,9 @@ class tree_controller extends controller {
 			$values = array();
 			$values['name'] = $_POST['name'];
 			$values['parent_id'] = $_POST['parent_id'];
+			$values['partner'] = $_POST['partner'];
+			$values['description'] = $_POST['description'];
+			$values['sex'] = ($_POST['sex']) ? 1 : 0;
 
 			if ($_POST['id'] == 0) {
 				$id = $this->model->addMember($values);
@@ -47,6 +53,7 @@ class tree_controller extends controller {
 				$data['success'] = $this->model->updateMember($values, $_POST['id']);
 			}
 			
+			header('Refresh: 3; URL=/tree/add');
 		}
 
 		$this->view->generate('tree_add_view.php', "template_view.php", $data);
